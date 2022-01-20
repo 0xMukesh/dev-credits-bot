@@ -1,4 +1,3 @@
-### NODE_MODULES ###
 node_modules
-### Some Screet file ###
 .env
+.vscode
