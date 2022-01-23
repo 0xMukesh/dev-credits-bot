@@ -1,4 +1,7 @@
+const Discord = require('discord.js')
 const axios = require('axios')
+
+const { catSmart, babyAngry } = require("../../utils/emojiList")
 
 module.exports = {
     name: 'getCredits',
@@ -8,9 +11,23 @@ module.exports = {
     execute(message, args) {
         axios.get(`https://devcredits-api.herokuapp.com/get/${message.mentions.users.first().id}`).then(async response => {
             try {
-                message.reply(`<@${message.mentions.users.first().id}> have ${response.data[0].credits} dev credits 🪙`)
+                const successEmbed = new Discord.MessageEmbed()
+                    .setDescription(`<@${message.mentions.users.first().id}> have ${response.data[0].credits} dev credits ${catSmart}`)
+                    .setColor("#12AD2B")
+                message.reply({ embeds: [successEmbed] })
             } catch (e) {
-                message.reply(`<@${message.mentions.users.first().id}>, smh dumb dev`)
+                if (e instanceof TypeError) {
+                    const noCreditsEmbed = new Discord.MessageEmbed()
+                        .setDescription(`<@${message.mentions.users.first().id}>, smh dumb dev ${babyAngry}`)
+                        .setColor("#ED4245")
+                    message.reply({ embeds: [noCreditsEmbed] })
+                }
+                else {
+                    const rateLimitEmbed = new Discord.MessageEmbed()
+                        .setDescription(`A random rate limit has been spawned ${babyAngry}`)
+                        .setColor("#ED4245")
+                    message.reply({ embeds: [rateLimitEmbed] })
+                }
             }
         })
     },
